@@ -1,13 +1,13 @@
 
 public class Person {
+	private int age;
 
-	public Person() {
-		// TODO Auto-generated constructor stub
+	public Person(int age) {
+		this.age = age;
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public void run() {
+		System.out.println("Corro");
 	}
 
 }
