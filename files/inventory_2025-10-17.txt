@@ -1,3 +1,0 @@
-Product: Manzana; Stock: 10
-Product: Fresa; Stock: 20
-Número total de productos: 2

@@ -13,14 +13,21 @@ public class Product {
     
 	public Product(String name, Amount wholesalerPrice, boolean available, int stock) {
 		super();
-		this.id = totalProducts+1;
+		//this.id = totalProducts+1;
 		this.name = name;
 		this.wholesalerPrice = wholesalerPrice;
 		this.publicPrice = new Amount(wholesalerPrice.getValue() * 2);
 		this.available = available;
 		this.stock = stock;
-		totalProducts++;
+		//totalProducts++;
 	}
+	
+
+
+	//Importante: hacer nuevo constructor para usarlo con el jdbc de la base de datos 
+
+
+
 
 	public int getId() {
 		return id;

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import dao.DaoImplFile;
+import dao.DaoImplJDBC;
 
 public class Shop {
 	private Amount cash = new Amount(100.00);
@@ -29,7 +30,7 @@ public class Shop {
 	private int numberSales;
 
 	final static double TAX_RATE = 1.04;
-	private DaoImplFile shop_dao = new DaoImplFile();
+	private DaoImplJDBC shop_dao = new DaoImplJDBC();
 	public Shop() {
 		inventory = new ArrayList<Product>();
 		sales = new ArrayList<Sale>();
@@ -101,6 +102,7 @@ public class Shop {
 		Shop shop = new Shop();
 
 		// load inventory from external data
+		shop.shop_dao.connect();
 		shop.loadInventory();
 		
 		// init session as employee
@@ -207,11 +209,11 @@ public class Shop {
 	 * load initial inventory to shop
 	 */
 	public void loadInventory() {
-//		addProduct(new Product("Manzana", new Amount(10.00), true, 10));
-//		addProduct(new Product("Pera", new Amount(20.00), true, 20));
-//		addProduct(new Product("Hamburguesa", new Amount(30.00), true, 30));
-//		addProduct(new Product("Fresa", new Amount(5.00), true, 20));
+		String url = "jdbc:mysql://localhost:3306/";
+        String user = "root";
+        String password = "";
 		// now read from file
+        shop_dao.connect();
 		this.readInventory();
 	}
 
@@ -220,8 +222,7 @@ public class Shop {
 	 */
 	private void readInventory() {
 		inventory = shop_dao.getInventory();
-		System.out.println(inventory);
-		System.out.println("Soy el inventario");
+		//System.out.println(inventory);
 	}
 
 	/**
@@ -246,7 +247,6 @@ public class Shop {
 		double wholesalerPrice = scanner.nextDouble();
 		System.out.print("Stock: ");
 		int stock = scanner.nextInt();
-
 		addProduct(new Product(name, new Amount(wholesalerPrice), true, stock));
 	}
 
@@ -275,7 +275,16 @@ public class Shop {
 			System.out.println("No se ha encontrado el producto con nombre " + name);
 		}
 	}
-
+	/**
+	 * remove a new product to inventory getting data from the view
+	 */
+	public void removeProduct(String name) {
+		if (findProduct(name)!=null) {
+			shop_dao.deleteProduct(name);
+		} else {
+			System.out.println("Producto no encontrado");
+		}
+	}
 	/**
 	 * add stock for a specific product
 	 */
@@ -296,6 +305,10 @@ public class Shop {
 		} else {
 			System.out.println("No se ha encontrado el producto con nombre " + name);
 		}
+	}
+	
+	public void updateProduct(Product producto) {
+		shop_dao.updateProduct(producto);
 	}
 
 	/**
@@ -498,7 +511,9 @@ public class Shop {
 			return;
 		}
 		inventory.add(product);
+		this.shop_dao.addProduct(product);
 		numberProducts++;
+		
 	}
 	
 	
@@ -529,5 +544,22 @@ public class Shop {
 		return null;
 
 	}
+	
+	
+	/**
+	 * delete product by id
+	 * 
+	 * @param product id
+	 */
+	public Product deleteProduct(int id) {
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i) != null && inventory.get(i).getId() == id) {
+				inventory.remove(i);
+			}
+		}
+		return null;
+
+	}
+
 
 }

@@ -7,9 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
 import model.Amount;
 import model.Employee;
 import model.Product;
@@ -85,7 +85,6 @@ public class DaoImplFile implements Dao{
 						break;
 					}
 				}
-				
 				productosLeidos.add(new Product(name, new Amount(wholesalerPrice), true, stock));
 				
 				// read next line
@@ -102,7 +101,7 @@ public class DaoImplFile implements Dao{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(productosLeidos);
+		//System.out.println(productosLeidos);
 		return productosLeidos;
 	}
 
@@ -115,7 +114,7 @@ public class DaoImplFile implements Dao{
 		//ArrayList<Sale> salesToWrite = new ArrayList<Sale>();
 		// locate file, path and name
 		// quitar el file separator para provocar el error
-		File f = new File(System.getProperty("user.dir") + File.separator + "files" + File.separator + fileName);
+		File f = new File(System.getProperty("user.dir") + "files" + File.separator + fileName);
 		try {
 			// wrap in proper classes
 			FileWriter fw;
@@ -137,4 +136,24 @@ public class DaoImplFile implements Dao{
 			return false;
 		}		
 	}
+
+	@Override
+	public void addProduct(Product producto) {
+		
+		
+	}
+
+	@Override
+	public void updateProduct(Product producto) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteProduct(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

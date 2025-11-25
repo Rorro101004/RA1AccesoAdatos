@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -143,26 +144,22 @@ public class ProductView extends JDialog implements ActionListener{
 			}
 		}
 	}
+	// recoger la información desde el product view
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == okButton) {
-			Product product;
+			
 			switch (this.option) {
 			case Constants.OPTION_ADD_PRODUCT:
+				Product product = new Product(textFieldName.getText(), new Amount(Double.parseDouble(textFieldPrice.getText())), true, Integer.parseInt(textFieldStock.getText()));
 				// check product does not exist
-				product = shop.findProduct(textFieldName.getText());
-				
-				if (product != null) {
+				if (shop.findProduct(product.getName()) != null) {
 					JOptionPane.showMessageDialog(null, "Producto ya existe ", "Error",
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {
-					product = new Product(textFieldName.getText(), 
-							new Amount(Double.parseDouble(textFieldPrice.getText())) ,
-							true,
-							Integer.parseInt(textFieldStock.getText()));
 					shop.addProduct(product);
 					JOptionPane.showMessageDialog(null, "Producto añadido ", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -181,7 +178,8 @@ public class ProductView extends JDialog implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {					
-					product.setStock(product.getStock() + Integer.parseInt(textFieldStock.getText()));
+					product.setStock(Integer.parseInt(textFieldStock.getText()));
+					shop.updateProduct(product);
 					JOptionPane.showMessageDialog(null, "Stock actualizado ", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
 					// release current screen
@@ -192,27 +190,27 @@ public class ProductView extends JDialog implements ActionListener{
 				
 			case Constants.OPTION_REMOVE_PRODUCT:
 				// check product exists
-				product = shop.findProduct(textFieldName.getText());
-				
-				if (product == null) {
-					JOptionPane.showMessageDialog(null, "Producto no existe ", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					
-				} else {					
-					shop.getInventory().remove(product);
-					JOptionPane.showMessageDialog(null, "Producto eliminado", "Information",
-							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
-					dispose();	
-				}
+					product = shop.findProduct(textFieldName.getText());
+					if (shop.findProduct(product.getName()) != null) {
+						shop.removeProduct(product.getName());
+						JOptionPane.showMessageDialog(null, "Producto eliminado", "Information",
+								JOptionPane.INFORMATION_MESSAGE);
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Producto no existe ", "Error",
+								JOptionPane.INFORMATION_MESSAGE);
+						// release current screen
+						dispose();	
+					}
 				
 				break;
 
 			default:
 				break;
 			}
-			
 		}
+			
+	
 		
 		if (e.getSource() == cancelButton) {
 			// release current screen
