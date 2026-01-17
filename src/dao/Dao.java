@@ -22,6 +22,6 @@ public interface Dao {
 	//Actualiza un producto
 	public void updateProduct(Product producto);
 	//Borrar un producto
-	public void deleteProduct(String name);
+	public void deleteProduct(int id);
 
 }

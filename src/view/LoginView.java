@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import dao.DaoImplHibernate;
 import exception.LimitLoginException;
 import model.Employee;
 import utils.Constants;
@@ -85,13 +87,14 @@ public class LoginView extends JFrame implements ActionListener{
 			// in case clicks button
 			String employeeId = textFieldEmployeeId.getText();
 			String password = textFieldPassword.getText();
-
+			DaoImplHibernate daoEmployee = new DaoImplHibernate();
 			if (employeeId.isEmpty() || password.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
 						JOptionPane.ERROR_MESSAGE);
 
 			} else {
 				Employee employee = new Employee();
+				employee.setDao(daoEmployee);
 				try {
 					boolean logged = employee.login(Integer.parseInt(employeeId), password);
 					

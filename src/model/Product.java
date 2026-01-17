@@ -1,33 +1,47 @@
 package model;
 
+import javax.persistence.*;
+@Entity 
+@Table(name = "inventory")
 public class Product {
+	@Id                                       
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column                   
 	private int id;
+	@Column(name = "name")
     private String name;
-    private Amount publicPrice;
+	@Transient 
+    private Amount publicPrice; 
+    @Transient
     private Amount wholesalerPrice;
+    @Column
+    private double price;
+    @Column
     private boolean available;
+    @Column
     private int stock;
+    @Transient
     private static int totalProducts;
+    @PostLoad
+    public void loadAmounts() {
+        this.publicPrice = new Amount(this.price);
+        this.wholesalerPrice = new Amount(this.price / 1.5);
+    }
+    public final static double EXPIRATION_RATE = 0.60;
     
-    public final static double EXPIRATION_RATE=0.60;
+    public Product() {
+    }
     
-	public Product(String name, Amount wholesalerPrice, boolean available, int stock) {
+	public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice,  boolean available,
+			int stock) {
 		super();
-		//this.id = totalProducts+1;
+		this.id = id;
 		this.name = name;
+		this.publicPrice = publicPrice;
 		this.wholesalerPrice = wholesalerPrice;
-		this.publicPrice = new Amount(wholesalerPrice.getValue() * 2);
 		this.available = available;
 		this.stock = stock;
-		//totalProducts++;
 	}
-	
-
-
-	//Importante: hacer nuevo constructor para usarlo con el jdbc de la base de datos 
-
-
-
 
 	public int getId() {
 		return id;
@@ -44,9 +58,6 @@ public class Product {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	
-
 	public Amount getPublicPrice() {
 		return publicPrice;
 	}
@@ -89,6 +100,15 @@ public class Product {
 	
 	public void expire() {
 		this.publicPrice.setValue(this.getPublicPrice().getValue()*EXPIRATION_RATE); ;
+	}
+	
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	@Override

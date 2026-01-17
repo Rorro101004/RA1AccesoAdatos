@@ -144,11 +144,7 @@ public class ShopView extends JFrame implements ActionListener, KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getKeyChar() == '0' ) {
-			if (shop.writeInventory()) {
-				JOptionPane.showMessageDialog(null, "Inventario exportado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(null, "Error al exportar inventario", "Error", JOptionPane.ERROR_MESSAGE);
-			}	
+			this.wInventory();		
         }
 		if (e.getKeyChar() == '1' ) {
 			this.openCashView();	
@@ -175,11 +171,7 @@ public class ShopView extends JFrame implements ActionListener, KeyListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == btnExportInventory) {
-			if (shop.writeInventory()) {
-				JOptionPane.showMessageDialog(null, "Inventario exportado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(null, "Error al exportar inventario", "Error", JOptionPane.ERROR_MESSAGE);
-			}						
+			this.wInventory();				
 		}
 		if (e.getSource() == btnShowCash) {
 			this.openCashView();						
@@ -195,7 +187,13 @@ public class ShopView extends JFrame implements ActionListener, KeyListener{
 		}
 		
 	}
-	
+	private void wInventory() {
+		if (shop.writeInventory()) {
+			JOptionPane.showMessageDialog(null, "Inventario exportado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, "Error al exportar inventario", "Error", JOptionPane.ERROR_MESSAGE);
+		}	
+	}
 	/**
 	 * open dialog to show shop cash
 	 */

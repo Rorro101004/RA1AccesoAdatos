@@ -73,9 +73,10 @@ public class ProductView extends JDialog implements ActionListener{
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
-		// name section
 		JLabel lblName = new JLabel("Nombre producto:");
+		if (option == Constants.OPTION_REMOVE_PRODUCT ) {
+			lblName.setText("Id Producto:");
+		}
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblName.setBounds(33, 10, 119, 19);
 		contentPanel.add(lblName);
@@ -153,8 +154,13 @@ public class ProductView extends JDialog implements ActionListener{
 			
 			switch (this.option) {
 			case Constants.OPTION_ADD_PRODUCT:
-				Product product = new Product(textFieldName.getText(), new Amount(Double.parseDouble(textFieldPrice.getText())), true, Integer.parseInt(textFieldStock.getText()));
-				// check product does not exist
+				Product product = new Product();
+				product.setName(textFieldName.getText());
+				product.setPublicPrice(new Amount(Double.parseDouble(textFieldPrice.getText())));
+				product.setPrice(Double.parseDouble(textFieldPrice.getText()));
+				product.setWholesalerPrice(new Amount(Double.parseDouble(textFieldPrice.getText())* 1.5));
+				product.setAvailable(true);
+				product.setStock(Integer.parseInt(textFieldStock.getText()));
 				if (shop.findProduct(product.getName()) != null) {
 					JOptionPane.showMessageDialog(null, "Producto ya existe ", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -190,9 +196,9 @@ public class ProductView extends JDialog implements ActionListener{
 				
 			case Constants.OPTION_REMOVE_PRODUCT:
 				// check product exists
-					product = shop.findProduct(textFieldName.getText());
+					product = shop.findProduct(Integer.parseInt(textFieldName.getText()));
 					if (shop.findProduct(product.getName()) != null) {
-						shop.removeProduct(product.getName());
+						shop.removeProduct(product.getId(), product.getName());
 						JOptionPane.showMessageDialog(null, "Producto eliminado", "Information",
 								JOptionPane.INFORMATION_MESSAGE);
 						

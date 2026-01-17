@@ -74,9 +74,11 @@ public class DaoImplJDBC implements Dao {
 
 	@Override
 	public ArrayList<Product> getInventory() {
+		/*
 		// TODO Auto-generated method stub
 		ArrayList<Product> inventario = new ArrayList<Product>();
 		String useShop = "use shop";
+		//presta atención a las issues a resolver, para luego hacer hibernate
 		String query = "Select * from inventory";
 		try {
 			Statement stmt = connection.createStatement();
@@ -101,6 +103,7 @@ public class DaoImplJDBC implements Dao {
 			System.err.println(e.getMessage());
 		}
 		return null;
+		*/
 	}
 
 	public boolean writeInventory(ArrayList<Product> products) {
@@ -143,7 +146,6 @@ public class DaoImplJDBC implements Dao {
 	    catch (Exception e) {
 			System.err.println("Error al insertar producto "+ e.getMessage());
 		}
-		
 	}
 
 	@Override

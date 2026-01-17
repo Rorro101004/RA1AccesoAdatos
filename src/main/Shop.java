@@ -16,8 +16,9 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import dao.Dao;
 import dao.DaoImplFile;
+import dao.DaoImplHibernate;
 import dao.DaoImplJDBC;
 
 public class Shop {
@@ -30,7 +31,7 @@ public class Shop {
 	private int numberSales;
 
 	final static double TAX_RATE = 1.04;
-	private DaoImplJDBC shop_dao = new DaoImplJDBC();
+	private Dao shop_dao = new DaoImplHibernate();
 	public Shop() {
 		inventory = new ArrayList<Product>();
 		sales = new ArrayList<Sale>();
@@ -184,8 +185,12 @@ public class Shop {
 	private void initSession() {
 		// TODO Auto-generated method stub
 		
-		Employee employee = new Employee("test");
-		boolean logged=false;
+		Employee employee = new Employee();
+
+	    employee.setDao(this.dao); 
+	    
+	    // 3. Ahora el empleado ya tiene la herramienta para preguntar a la BD
+	    boolean loginCorrecto = employee.login(idUsuario, password);
 		
 		do {
 			Scanner scanner = new Scanner(System.in);
@@ -247,7 +252,7 @@ public class Shop {
 		double wholesalerPrice = scanner.nextDouble();
 		System.out.print("Stock: ");
 		int stock = scanner.nextInt();
-		addProduct(new Product(name, new Amount(wholesalerPrice), true, stock));
+		//addProduct(new Product(name, new Amount(wholesalerPrice), true, stock));
 	}
 
 	/**
@@ -278,9 +283,11 @@ public class Shop {
 	/**
 	 * remove a new product to inventory getting data from the view
 	 */
-	public void removeProduct(String name) {
-		if (findProduct(name)!=null) {
-			shop_dao.deleteProduct(name);
+	public void removeProduct(int idProduct, String nameProduct) {
+		Product product = findProduct(nameProduct);
+		if (product !=null) {
+			shop_dao.deleteProduct(idProduct);
+			inventory.remove(product);
 		} else {
 			System.out.println("Producto no encontrado");
 		}
@@ -538,6 +545,15 @@ public class Shop {
 	public Product findProduct(String name) {
 		for (int i = 0; i < inventory.size(); i++) {
 			if (inventory.get(i) != null && inventory.get(i).getName().equalsIgnoreCase(name)) {
+				return inventory.get(i);
+			}
+		}
+		return null;
+
+	}
+	public Product findProduct(int idProduct) {
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i) != null && inventory.get(i).getId() == idProduct) {
 				return inventory.get(i);
 			}
 		}

@@ -2,29 +2,34 @@ package model;
 
 import main.Logable;
 import dao.*;
-
+import javax.persistence.*;
+@Entity
+@Table(name = "employee") 
 public class Employee extends Person implements Logable{
-	private int employeeId;
-	private String password;
-	// connection using JDBC SQL
-	private Dao dao = new DaoImplJDBC();
+	    @Id
+	    @Column
+	    private int employeeId;
+
+	    @Column
+	    private String name;
+
+	    @Column
+	    private String password; 
+	  
+	    @Transient 
+	    private Dao dao; 
+
 	
-//	public static final int USER = 123;
-//	public static final String PASSWORD = "test";
-	
-	public Employee(String name) {
-		super(name);
-	}
-	
-	public Employee(int employeeId, String name, String password) {
-		super(name);
-		this.employeeId = employeeId;
-		this.password = password;
-	}
-	
-	public Employee() {
-		super();
-	}
+	    public Employee() {
+	        super();
+	    }
+
+	    public Employee(int employeeId, String name, String password) {
+	        super(name);
+	        this.employeeId = employeeId;
+	        this.name = name;
+	        this.password = password;
+	    }
 	
 	/**
 	 * @return the employeeId
@@ -53,29 +58,21 @@ public class Employee extends Person implements Logable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	public void setDao(Dao dao) {
+        this.dao = dao;
+    }
 	/**
 	 * @param user from application, password from application
 	 * @return true if credentials are correct or false if not
 	 */
 	@Override
 	public boolean login(int user, String password) {
-//		if (USER == user && PASSWORD.equals(password)) {
-//			return true;
-//		} 
-		boolean success = false;
-		
-		// connect to data
-		dao.connect();
-		
-		// get employee data
-		if(dao.getEmployee(user, password) != null) {
-			success =  true;
-		}
-		
-		// disconnect data
-		dao.disconnect();
-		return success;
+        if (this.dao == null) {
+            System.err.println("Error: El empleado no tiene DAO asignado.");
+            return false;
+        }
+        Employee e = dao.getEmployee(user, password);
+        return (e != null);
 	}
 
 }
