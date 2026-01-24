@@ -85,7 +85,7 @@ public class DaoImplFile implements Dao{
 						break;
 					}
 				}
-				productosLeidos.add(new Product(name, new Amount(wholesalerPrice), true, stock));
+				productosLeidos.add(new Product());
 				
 				// read next line
 				line = br.readLine();
@@ -150,7 +150,7 @@ public class DaoImplFile implements Dao{
 	}
 
 	@Override
-	public void deleteProduct(String name) {
+	public void deleteProduct(int name) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -71,40 +71,35 @@ public class DaoImplJDBC implements Dao {
 		}
     	return employee;
 	}
-
 	@Override
 	public ArrayList<Product> getInventory() {
-		/*
-		// TODO Auto-generated method stub
-		ArrayList<Product> inventario = new ArrayList<Product>();
-		String useShop = "use shop";
-		//presta atención a las issues a resolver, para luego hacer hibernate
-		String query = "Select * from inventory";
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.execute(useShop);
-			ResultSet rs = stmt.executeQuery(query);
-			while (rs.next()) {
-		        //String id = String.valueOf(rs.getInt("id"));
-		        String name = rs.getString("name");
-		        Amount price =  new Amount(rs.getDouble("wholesaler_price"));
-		        boolean available = rs.getBoolean("available");
-		        int stock = rs.getInt("stock");
-		        Product producto = new Product(name, price, available, stock);
-		        inventario.add(producto);
-		        // ver el tema de find product
-		        // Guardamos cada fila como array de Strings
-		    }
-			System.out.println(inventario);
-			return inventario;
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e.getMessage());
-		}
-		return null;
-		*/
+		ArrayList<Product> products = new ArrayList<Product>();
+	    String query = "SELECT * FROM inventory"; 
+
+	    try (Statement stmt = connection.createStatement();
+	         ResultSet rs = stmt.executeQuery(query)) { 
+
+	        while (rs.next()) {
+
+	            int id = rs.getInt("id"); 
+	            String name = rs.getString("name");
+	            double price = rs.getDouble("wholesalerPrice"); 
+	            int stock = rs.getInt("stock");
+	            boolean available = rs.getBoolean("available");
+	            Product p = new Product();
+	            
+	            p.setId(id);
+
+	            products.add(p);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    
+	    return products;
 	}
+	
 
 	public boolean writeInventory(ArrayList<Product> products) {
 	    String sql = "INSERT INTO historical_inventory ( name, wholesaler_price, available, stock, created_at) VALUES (?, ?, ?, ?, ?)";
@@ -132,60 +127,20 @@ public class DaoImplJDBC implements Dao {
 	}
 
 
-	@Override
 	public void addProduct(Product producto) {
-		String sql = "INSERT INTO inventory (name, wholesaler_price, available, stock) VALUES (?, ?, ?, ?)";
-	    try {
-	    	PreparedStatement stmt = connection.prepareStatement(sql); 
-	        stmt.setString(1, producto.getName());
-	        stmt.setDouble(2, producto.getWholesalerPrice().getValue());
-	        stmt.setBoolean(3, true);
-	        stmt.setInt(4, producto.getStock());
-	        stmt.executeUpdate();
-	    }
-	    catch (Exception e) {
-			System.err.println("Error al insertar producto "+ e.getMessage());
-		}
+		
+		
 	}
 
 	@Override
 	public void updateProduct(Product producto) {
-	    String sql = "UPDATE inventory SET stock = ? WHERE name = ?";
-	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-	        stmt.setInt(1, producto.getStock());   // nuevo stock
-	        stmt.setString(2, producto.getName());      // id del producto a actualizar
-	        int rowsAffected = stmt.executeUpdate();
-	        
-	        if (rowsAffected > 0) {
-	            System.out.println("Stock actualizado correctamente para el producto con nombre " + producto.getName());
-	        } else {
-	            System.out.println("No se encontró producto con nombre " + producto.getName());
-	        }
-	    } catch (Exception e) {
-	        System.err.println("Error al actualizar stock: " + e.getMessage());
-	    }
-	}
-
-
-	@Override
-	public void deleteProduct(String name) {
 		// TODO Auto-generated method stub
-		String sql = "DELETE FROM inventory WHERE name= ?";
-		try {
-		    PreparedStatement stmt = connection.prepareStatement(sql);
-		    stmt.setString(1, name); 
-		    int rowsAffected = stmt.executeUpdate();
-		    if (rowsAffected > 0) {
-		        System.out.println("Producto eliminado correctamente.");
-		    } else {
-		        System.out.println("No se encontró el producto con ese nombre.");
-		    }
-		} catch (Exception e) {
-		    System.err.println("Error al eliminar producto: " + e.getMessage());
-		}
-
 		
 	}
-	
 
+	@Override
+	public void deleteProduct(int id) {
+		// TODO Auto-generated method stub
+		
+	}
 }

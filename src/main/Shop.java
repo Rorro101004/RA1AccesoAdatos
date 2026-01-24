@@ -183,32 +183,34 @@ public class Shop {
 	}
 
 	private void initSession() {
-		// TODO Auto-generated method stub
-		
-		Employee employee = new Employee();
+        Employee employee = new Employee();
+        boolean logged = false; 
+        Scanner scanner = new Scanner(System.in);
 
-	    employee.setDao(this.dao); 
-	    
-	    // 3. Ahora el empleado ya tiene la herramienta para preguntar a la BD
-	    boolean loginCorrecto = employee.login(idUsuario, password);
-		
-		do {
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("Introduzca numero de empleado: ");
-			int employeeId = scanner.nextInt();
-			
-			System.out.println("Introduzca contraseña: ");
-			String password = scanner.next();
-			
-			logged = employee.login(employeeId, password);
-			if (logged) {
-				System.out.println("Login correcto ");
-			} else {
-				System.out.println("Usuario o password incorrectos ");
-			}
-		} while (!logged);
-				
-	}
+        do {
+            System.out.println("Introduzca numero de empleado: ");
+            int employeeId = 0;
+            if(scanner.hasNextInt()) {
+                employeeId = scanner.nextInt();
+            } else {
+                scanner.next();
+                System.out.println("El ID debe ser numérico.");
+                continue;
+            }
+            
+            System.out.println("Introduzca contraseña: ");
+            String password = scanner.next();
+            
+            // Asumiendo que la clase Employee tiene este método implementado
+            logged = employee.login(employeeId, password);
+            
+            if (logged) {
+                System.out.println("Login correcto ");
+            } else {
+                System.out.println("Usuario o password incorrectos ");
+            }
+        } while (!logged);     
+    }
 
 	/**
 	 * load initial inventory to shop
