@@ -4,19 +4,18 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import dao.DaoImplHibernate;
+import dao.DaoImplMongoDB;
 import exception.LimitLoginException;
 import model.Employee;
 import utils.Constants;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 
 public class LoginView extends JFrame implements ActionListener{
 
@@ -87,7 +86,7 @@ public class LoginView extends JFrame implements ActionListener{
 			// in case clicks button
 			String employeeId = textFieldEmployeeId.getText();
 			String password = textFieldPassword.getText();
-			DaoImplHibernate daoEmployee = new DaoImplHibernate();
+			DaoImplMongoDB daoEmployee = new DaoImplMongoDB();
 			if (employeeId.isEmpty() || password.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
 						JOptionPane.ERROR_MESSAGE);

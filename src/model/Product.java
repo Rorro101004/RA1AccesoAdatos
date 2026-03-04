@@ -32,8 +32,7 @@ public class Product {
     public Product() {
     }
     
-	public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice,  boolean available,
-			int stock) {
+	public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice,  boolean available,int stock) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -41,6 +40,7 @@ public class Product {
 		this.wholesalerPrice = wholesalerPrice;
 		this.available = available;
 		this.stock = stock;
+		++totalProducts;
 	}
 
 	public int getId() {

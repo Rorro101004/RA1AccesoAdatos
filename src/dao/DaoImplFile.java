@@ -10,13 +10,18 @@ import java.io.PrintWriter;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
 import model.Amount;
 import model.Employee;
 import model.Product;
 import model.Sale;
 
 public class DaoImplFile implements Dao{
-
+	private MongoClient client;
+    private MongoDatabase db;
 	@Override
 	public void connect() {
 		// TODO Auto-generated method stub
