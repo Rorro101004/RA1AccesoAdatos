@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import dao.DaoImplMongoDB;
 import dao.DaoImplObjectDB;
 import exception.LimitLoginException;
+import main.Shop;
 import model.Employee;
 import utils.Constants;
 
@@ -86,46 +87,39 @@ public class LoginView extends JFrame implements ActionListener{
 	    if (e.getSource() == btnLogin) {
 	        String employeeIdStr = textFieldEmployeeId.getText();
 	        String password = textFieldPassword.getText();
+
 	        if (employeeIdStr.isEmpty() || password.isEmpty()) {
 	            JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
 	                    JOptionPane.ERROR_MESSAGE);
-	            return; 
+	            return;
 	        }
 
 	        try {
 	            int id = Integer.parseInt(employeeIdStr);
-	            DaoImplObjectDB daoEmployee = new DaoImplObjectDB();
-	            daoEmployee.connect();
-
-	            Employee employee = new Employee();
-	            employee.setDao(daoEmployee);
 
 	            try {
 	                if (counterErrorLogin >= Constants.MAX_LOGIN_TIMES) {
 	                    throw new LimitLoginException("Error login superado", counterErrorLogin);
 	                }
 
-	                boolean logged = employee.login(id, password);
+	                boolean logged = Shop.getInstance().loginEmployee(id, password);
 
 	                if (logged) {
-	                    ShopView shop = new ShopView();
-	                    shop.setExtendedState(NORMAL);
-	                    shop.setVisible(true);
+	                    ShopView shopView = new ShopView();
+	                    shopView.setExtendedState(NORMAL);
+	                    shopView.setVisible(true);
 	                    dispose();
 	                } else {
 	                    counterErrorLogin++;
 	                    JOptionPane.showMessageDialog(null, "Usuario o password incorrectos", "Error",
 	                            JOptionPane.ERROR_MESSAGE);
-	                    
 	                    textFieldEmployeeId.setText("");
 	                    textFieldPassword.setText("");
 	                }
-	                daoEmployee.disconnect();
 
 	            } catch (LimitLoginException ex) {
 	                JOptionPane.showMessageDialog(null, ("Error login, superados los " + counterErrorLogin + " intentos"), "Error",
 	                        JOptionPane.ERROR_MESSAGE);
-	                daoEmployee.disconnect();
 	                dispose();
 	            }
 

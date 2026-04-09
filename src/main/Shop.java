@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import dao.Dao;
 import dao.DaoImplMongoDB;
+import dao.DaoImplObjectDB;
 import dao.DaoImplFile;
 import dao.DaoImplHibernate;
 import dao.DaoImplJDBC;
@@ -32,14 +33,27 @@ public class Shop {
 	private int numberSales;
 
 	final static double TAX_RATE = 1.04;
-	// shop dao cambiado 
-	private Dao shop_dao = new DaoImplMongoDB();
+	private static Shop instance;
+	private Dao shop_dao = new DaoImplObjectDB();
 	public Shop() {
+		instance = this;
 		inventory = new ArrayList<Product>();
 		sales = new ArrayList<Sale>();
+		this.shop_dao.connect();
 	}
 	
-	
+    public static Shop getInstance() {
+        if (instance == null) {
+            instance = new Shop();
+        }
+        return instance;
+    }
+
+    public boolean loginEmployee(int id, String pw) {
+        Employee employee = new Employee();
+        employee.setDao((DaoImplObjectDB) this.shop_dao); 
+        return employee.login(id, pw);
+    }
 
 	public Amount getCash() {
 		return cash;
