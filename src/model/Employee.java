@@ -17,7 +17,7 @@ public class Employee extends Person implements Logable{
 	    private String password; 
 	  
 	    @Transient 
-	    private Dao dao; 
+	    private DaoImplObjectDB dao; 
 
 	
 	    public Employee() {
@@ -58,7 +58,7 @@ public class Employee extends Person implements Logable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public void setDao(Dao dao) {
+	public void setDao(DaoImplObjectDB dao) {
         this.dao = dao;
     }
 	/**

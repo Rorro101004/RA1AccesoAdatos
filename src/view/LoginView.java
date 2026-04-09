@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import dao.DaoImplMongoDB;
+import dao.DaoImplObjectDB;
 import exception.LimitLoginException;
 import model.Employee;
 import utils.Constants;
@@ -82,52 +83,57 @@ public class LoginView extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnLogin) {
-			// in case clicks button
-			String employeeId = textFieldEmployeeId.getText();
-			String password = textFieldPassword.getText();
-			DaoImplMongoDB daoEmployee = new DaoImplMongoDB();
-			if (employeeId.isEmpty() || password.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
-						JOptionPane.ERROR_MESSAGE);
+	    if (e.getSource() == btnLogin) {
+	        String employeeIdStr = textFieldEmployeeId.getText();
+	        String password = textFieldPassword.getText();
+	        if (employeeIdStr.isEmpty() || password.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
+	                    JOptionPane.ERROR_MESSAGE);
+	            return; 
+	        }
 
-			} else {
-				Employee employee = new Employee();
-				employee.setDao(daoEmployee);
-				try {
-					boolean logged = employee.login(Integer.parseInt(employeeId), password);
-					
-					if (Constants.MAX_LOGIN_TIMES <= counterErrorLogin) {
-						throw new LimitLoginException("Error login superado", counterErrorLogin);
-					}
-					if (logged) {
-						// redirect to shop window
-						ShopView shop = new ShopView();
-						shop.setExtendedState(NORMAL);
-						shop.setVisible(true);
-						
-						// release current screen
-						dispose();					
-						
-					} else {
-						counterErrorLogin++;
-						JOptionPane.showMessageDialog(null, "Usuario o password incorrectos ", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						
-						// clean login form
-						textFieldEmployeeId.setText("");
-						textFieldPassword.setText("");
-					}
-				} catch (LimitLoginException ex) {
-					// TODO: handle exception
-					JOptionPane.showMessageDialog(null, ("Error login, superados los " + counterErrorLogin + " intentos"), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					// release current screen
-					dispose();
-				}
-				
-			}
+	        try {
+	            int id = Integer.parseInt(employeeIdStr);
+	            DaoImplObjectDB daoEmployee = new DaoImplObjectDB();
+	            daoEmployee.connect();
 
-		}
+	            Employee employee = new Employee();
+	            employee.setDao(daoEmployee);
+
+	            try {
+	                if (counterErrorLogin >= Constants.MAX_LOGIN_TIMES) {
+	                    throw new LimitLoginException("Error login superado", counterErrorLogin);
+	                }
+
+	                boolean logged = employee.login(id, password);
+
+	                if (logged) {
+	                    ShopView shop = new ShopView();
+	                    shop.setExtendedState(NORMAL);
+	                    shop.setVisible(true);
+	                    dispose();
+	                } else {
+	                    counterErrorLogin++;
+	                    JOptionPane.showMessageDialog(null, "Usuario o password incorrectos", "Error",
+	                            JOptionPane.ERROR_MESSAGE);
+	                    
+	                    textFieldEmployeeId.setText("");
+	                    textFieldPassword.setText("");
+	                }
+	                daoEmployee.disconnect();
+
+	            } catch (LimitLoginException ex) {
+	                JOptionPane.showMessageDialog(null, ("Error login, superados los " + counterErrorLogin + " intentos"), "Error",
+	                        JOptionPane.ERROR_MESSAGE);
+	                daoEmployee.disconnect();
+	                dispose();
+	            }
+
+	        } catch (NumberFormatException nfe) {
+	            JOptionPane.showMessageDialog(null, "El número de empleado debe ser numérico", "Error",
+	                    JOptionPane.ERROR_MESSAGE);
+	            textFieldEmployeeId.setText("");
+	        }
+	    }
 	}
 }
